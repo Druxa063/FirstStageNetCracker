@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,7 +29,8 @@ public class HeroServlet extends HttpServlet {
         super.init();
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("C:\\projects\\InternshipNetCracker\\FirstStageNetCracker\\src\\main\\resources\\postgres.properties"));
+            URL location = HeroServlet.class.getProtectionDomain().getCodeSource().getLocation();
+            properties.load(new FileInputStream(location.getFile() + "postgres.properties"));
             String driver = properties.getProperty("database.driver");
             String url = properties.getProperty("database.url");
             String user = properties.getProperty("database.username");
