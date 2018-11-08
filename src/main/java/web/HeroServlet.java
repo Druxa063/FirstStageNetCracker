@@ -1,6 +1,7 @@
 package web;
 
 import model.Hero;
+import org.apache.log4j.Logger;
 import repository.HeroRepository;
 import repository.HeroRepositoryImpl;
 
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,6 +20,8 @@ import java.util.Objects;
 import java.util.Properties;
 
 public class HeroServlet extends HttpServlet {
+
+    private static Logger log = Logger.getLogger(HeroServlet.class);
 
     private Connection connection;
     private HeroRepository repository;
@@ -64,11 +66,13 @@ public class HeroServlet extends HttpServlet {
             switch (action == null ? "all" : action) {
                 case "find" :
                     request.setAttribute("heroes", Arrays.asList(repository.getByName(request.getParameter("nameHero"))));
+                    log.info("Hero successfully find");
                     request.getRequestDispatcher("/listHero.jsp").forward(request, response);
                     break;
                 case "delete":
                     int id = getId(request);
                     repository.delete(id);
+                    log.info("Hero successfully delete");
                     response.sendRedirect("heroes");
                     break;
                 case "create":
@@ -76,16 +80,20 @@ public class HeroServlet extends HttpServlet {
                     Hero hero = action.equals("create") ?
                             new Hero() : repository.get(getId(request));
                     request.setAttribute("hero", hero);
+                    log.info("forward to heroForm.jsp ");
                     request.getRequestDispatcher("/heroForm.jsp").forward(request, response);
                     break;
                 case "all":
                 default:
                     request.setAttribute("heroes", repository.getAll());
+                    log.info("forward to heroes");
                     request.getRequestDispatcher("/listHero.jsp").forward(request, response);
                     break;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            log.debug("Exception in doGet : ", e);
         }
     }
 
@@ -103,9 +111,12 @@ public class HeroServlet extends HttpServlet {
         );
         try {
             repository.save(hero);
+            log.info("Hero successfully create/update");
             response.sendRedirect("/heroes");
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            log.debug("Exception in doPost : ", e);
         }
     }
 
