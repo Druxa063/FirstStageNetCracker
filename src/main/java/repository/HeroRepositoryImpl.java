@@ -62,7 +62,7 @@ public class HeroRepositoryImpl implements HeroRepository {
     public List<Hero> getAll() throws SQLException {
         List<Hero> list = new ArrayList<Hero>();
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM hero");
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM hero ORDER BY power, name");
         while (resultSet.next()) {
             list.add(getHeroFromResultSet(resultSet));
         }
