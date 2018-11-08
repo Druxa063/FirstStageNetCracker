@@ -7,11 +7,13 @@
 </head>
 <body>
 <a href="heroes?action=create">Add Hero</a>
+<div class="form-style-2">
 <form method="get" action="heroes">
     <input type="hidden" name="action" value="find">
-    Name Hero : <input type="text" name="nameHero">
-    <input type="submit" value="Search">
+    <label for="nameHero"><span>Name Hero </span><input class="input-field" type="text" name="nameHero"></label>
+    <label><span> </span><button type="submit">Search</button></label>
 </form>
+</div>
 <table border="1">
     <thead>
     <th>Name</th>
