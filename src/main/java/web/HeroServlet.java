@@ -4,6 +4,7 @@ import model.Hero;
 import org.apache.log4j.Logger;
 import repository.HeroRepository;
 import repository.HeroRepositoryImpl;
+import util.ValidationException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -91,6 +92,7 @@ public class HeroServlet extends HttpServlet {
                     break;
             }
         } catch (SQLException e) {
+            log.debug("SQLException in doGet : ", e);
             e.printStackTrace();
         } catch (Exception e) {
             log.debug("Exception in doGet : ", e);
@@ -100,20 +102,39 @@ public class HeroServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String id = request.getParameter("id");
-        Hero hero = new Hero(
-                id.isEmpty() ? null : getId(request),
-                request.getParameter("name"),
-                request.getParameter("universe"),
-                Integer.parseInt(request.getParameter("power")),
-                request.getParameter("description"),
-                Boolean.parseBoolean(request.getParameter("alive"))
-        );
         try {
+            String id = request.getParameter("id");
+            String name = request.getParameter("name");
+            String universe = request.getParameter("universe");
+            int power = Integer.parseInt(request.getParameter("power"));
+            String description = request.getParameter("description");
+            boolean alive = Boolean.parseBoolean(request.getParameter("alive"));
+            if (name.length() > 30) {
+                throw new ValidationException("The name should not be more than 30 characters");
+            }
+            if (repository.getByName(name) != null) {
+                throw new ValidationException("Hero with the same name already exists");
+            }
+            if (power < 0 || power > 100) {
+                throw new ValidationException("The power should not be less than 0 and greater than 100");
+            }
+            Hero hero = new Hero(
+                    id.isEmpty() ? null : getId(request),
+                    name,
+                    universe,
+                    power,
+                    description,
+                    alive
+            );
             repository.save(hero);
             log.info("Hero successfully create/update");
             response.sendRedirect("/heroes");
+        } catch (ValidationException e) {
+            log.debug("Exception validation : ", e);
+            request.setAttribute("message", e.getMessage());
+            request.getRequestDispatcher("/validation.jsp").forward(request, response);
         } catch (SQLException e) {
+            log.debug("SQLException in doPost : ", e);
             e.printStackTrace();
         } catch (Exception e) {
             log.debug("Exception in doPost : ", e);

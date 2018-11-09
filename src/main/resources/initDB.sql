@@ -6,7 +6,7 @@ CREATE SEQUENCE global_seq START 100000;
 CREATE TABLE hero
 (
   id INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-  name          VARCHAR(255)      NOT NULL,
+  name          VARCHAR(30)      NOT NULL,
   universe      VARCHAR(100)      NOT NULL,
   power         INTEGER           NOT NULL,
   description   VARCHAR(255)      NOT NULL,
