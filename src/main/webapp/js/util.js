@@ -150,3 +150,23 @@ function search(value) {
     xmlhttp.open("GET", "heroes?action=find&nameHero=" + value, true);
     xmlhttp.send();
 }
+
+function matches() {
+    var txt = "";
+    var pMatches = document.getElementById("matches");
+    var form = document.forms["saveForm"]["name"];
+    form.onkeyup = function () {
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                json = JSON.parse(this.responseText);
+                for (var x = 0; x < json.length; x++) {
+                    txt = txt.concat(", ", json[x].name);
+                }
+                pMatches.innerText = txt.substring(2);
+            }
+        };
+        xmlhttp.open("GET", "heroes?action=find&nameHero=" + value, true);
+        xmlhttp.send();
+    }
+}
