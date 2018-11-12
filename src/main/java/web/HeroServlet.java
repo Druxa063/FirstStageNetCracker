@@ -52,8 +52,8 @@ public class HeroServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        super.destroy();
         try {
+            super.destroy();
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,19 +74,24 @@ public class HeroServlet extends HttpServlet {
                     int id = getId(request);
                     repository.delete(id);
                     log.info("Hero successfully delete");
-                    response.sendRedirect("heroes");
                     break;
                 case "create":
                 case "update":
                     Hero hero = action.equals("create") ?
                             new Hero() : repository.get(getId(request));
-                    request.setAttribute("hero", hero);
-                    log.info("forward to heroForm.jsp ");
-                    request.getRequestDispatcher("/heroForm.jsp").forward(request, response);
+                    log.info("forward to saveForm");
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(hero.toString());
+                    break;
+                case "ajax" :
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    String json = repository.getAll().toString();
+                    response.getWriter().write(json);
                     break;
                 case "all":
                 default:
-                    request.setAttribute("heroes", repository.getAll());
                     log.info("forward to heroes");
                     request.getRequestDispatcher("/listHero.jsp").forward(request, response);
                     break;
@@ -112,7 +117,7 @@ public class HeroServlet extends HttpServlet {
             if (name.length() > 30) {
                 throw new ValidationException("The name should not be more than 30 characters");
             }
-            if (repository.getByName(name) != null) {
+            if (id.isEmpty() & repository.getByName(name) != null) {
                 throw new ValidationException("Hero with the same name already exists");
             }
             if (power < 0 || power > 100) {
@@ -128,7 +133,6 @@ public class HeroServlet extends HttpServlet {
             );
             repository.save(hero);
             log.info("Hero successfully create/update");
-            response.sendRedirect("/heroes");
         } catch (ValidationException e) {
             log.debug("Exception validation : ", e);
             request.setAttribute("message", e.getMessage());
