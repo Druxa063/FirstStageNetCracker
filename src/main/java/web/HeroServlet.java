@@ -77,7 +77,6 @@ public class HeroServlet extends HttpServlet {
                     repository.delete(id);
                     log.info("Hero successfully delete");
                     break;
-                case "create":
                 case "update":
                     Hero hero = action.equals("create") ?
                             new Hero() : repository.get(getId(request));
