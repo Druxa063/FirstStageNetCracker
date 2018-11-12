@@ -112,3 +112,41 @@ function save() {
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlhttp.send("id=" + id + "&" + "name=" + name + "&" + "universe=" + universe + "&" + "power=" + power + "&" + "description=" + description + "&" + "alive=" + alive);
 }
+
+function openModal() {
+    var modal = document.getElementById('saveModal');
+    var saveBtnModal = document.getElementById('saveBtnModal');
+    var closeBtnModal = document.getElementById('closeBtnModal');
+
+    var form = document.forms["saveForm"];
+    form["id"].value = "";
+    form["name"].value = "";
+    form["universe"].value = "";
+    form["power"].value = "";
+    form["description"].value = "";
+    form["alive"].value = "";
+
+    modal.style.display = "block";
+
+    closeBtnModal.onclick = function () {
+        modal.style.display = "none";
+    };
+    window.onclick = function (ev) {
+        if (ev.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+}
+
+function search(value) {
+    var xmlhttp, json;
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            json = JSON.parse(this.responseText);
+            paint(json);
+        }
+    };
+    xmlhttp.open("GET", "heroes?action=find&nameHero=" + value, true);
+    xmlhttp.send();
+}

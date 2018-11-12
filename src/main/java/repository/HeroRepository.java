@@ -13,7 +13,7 @@ public interface HeroRepository {
 
     Hero get(int id) throws SQLException;
 
-    Hero getByName(String name) throws SQLException;
+    List<Hero> getByName(String name) throws SQLException;
 
     List<Hero> getAll() throws SQLException;
 }

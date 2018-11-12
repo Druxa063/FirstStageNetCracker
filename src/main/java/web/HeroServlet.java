@@ -66,9 +66,11 @@ public class HeroServlet extends HttpServlet {
         try {
             switch (action == null ? "all" : action) {
                 case "find" :
-                    request.setAttribute("heroes", Arrays.asList(repository.getByName(request.getParameter("nameHero"))));
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    String json = repository.getByName(request.getParameter("nameHero")).toString();
+                    response.getWriter().write(json);
                     log.info("Hero successfully find");
-                    request.getRequestDispatcher("/listHero.jsp").forward(request, response);
                     break;
                 case "delete":
                     int id = getId(request);
@@ -87,8 +89,7 @@ public class HeroServlet extends HttpServlet {
                 case "ajax" :
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    String json = repository.getAll().toString();
-                    response.getWriter().write(json);
+                    response.getWriter().write(repository.getAll().toString());
                     break;
                 case "all":
                 default:

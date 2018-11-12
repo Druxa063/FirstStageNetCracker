@@ -37,7 +37,8 @@ tr[data-heroAlive="false"] {
 .form-style-2 input.input-field{
     width: 48%;
 }
-.form-style-2 input.input-field{
+.form-style-2 input.input-field,
+.form-style-2 .textarea-field{
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -51,11 +52,15 @@ tr[data-heroAlive="false"] {
     padding: 7px;
     outline: none;
 }
-.form-style-2 .input-field:focus{
+.form-style-2 .input-field:focus,
+.form-style-2 .textarea-field:focus{
     border: 1px solid #0C0;
 }
-.form-style-2 input[type=submit],
-.form-style-2 input[type=button]{
+.form-style-2 .textarea-field{
+    height:200px;
+    width: 70%;
+}
+.form-style-2 .button{
     border: none;
     padding: 8px 15px 8px 15px;
     background: #FF8500;
@@ -67,8 +72,7 @@ tr[data-heroAlive="false"] {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
 }
-.form-style-2 input[type=submit]:hover,
-.form-style-2 input[type=button]:hover{
+.form-style-2 .button:hover{
     background: #EA7B00;
     color: #fff;
 }
