@@ -28,13 +28,16 @@ public class HeroRepositoryImpl implements HeroRepository {
         statement.setInt(3, hero.getPower());
         statement.setString(4, hero.getDescription());
         statement.setBoolean(5, hero.isAlive());
+        statement.close();
         return statement.execute();
     }
 
     public boolean delete(int id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("DELETE FROM hero WHERE id=?");
         statement.setInt(1, id);
-        return statement.execute();
+        statement.close();
+        boolean execute = statement.execute();
+        return execute;
     }
 
     public Hero get(int id) throws SQLException {
@@ -45,6 +48,7 @@ public class HeroRepositoryImpl implements HeroRepository {
         while (resultSet.next()) {
             hero = getHeroFromResultSet(resultSet);
         }
+        statement.close();
         return hero;
     }
 
@@ -56,6 +60,7 @@ public class HeroRepositoryImpl implements HeroRepository {
         while (resultSet.next()) {
             hero = getHeroFromResultSet(resultSet);
         }
+        statement.close();
         return hero;
     }
 
@@ -66,6 +71,7 @@ public class HeroRepositoryImpl implements HeroRepository {
         while (resultSet.next()) {
             list.add(getHeroFromResultSet(resultSet));
         }
+        statement.close();
         return list;
     }
 
