@@ -68,7 +68,14 @@ public class HeroServlet extends HttpServlet {
                 case "find" :
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    String json = repository.getByName(request.getParameter("nameHero")).toString();
+                    StringBuilder like = new StringBuilder(request.getParameter("nameHero"));
+                    boolean matches = Boolean.parseBoolean(request.getParameter("matches"));
+                    like.append("%");
+                    if (!matches) {
+                        like.insert(0, "%");
+                    }
+                    String json = repository.getByName(like.toString()).toString();
+                    System.out.println(json);
                     response.getWriter().write(json);
                     log.info("Hero successfully find");
                     break;
@@ -78,8 +85,7 @@ public class HeroServlet extends HttpServlet {
                     log.info("Hero successfully delete");
                     break;
                 case "update":
-                    Hero hero = action.equals("create") ?
-                            new Hero() : repository.get(getId(request));
+                    Hero hero = repository.get(getId(request));
                     log.info("forward to saveForm");
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");

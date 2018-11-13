@@ -25,6 +25,7 @@
     <tbody id="tableHeroBody">
     </tbody>
 </table>
+<p id="matches"></p>
 <div id="deleteModal" class="modal">
     <div class="modal-content">
         <button id="deleteBtnModal">Delete</button>
@@ -36,7 +37,7 @@
         <div class="form-style-2">
             <form name="saveForm">
                 <input type="hidden" name="id" value="${hero.id}">
-                <label for="name"><span>Name <span class="required">*</span></span><input type="text" class="input-field" name="name" value="${hero.name}" maxlength="30" required><p id="matches"></p></label>
+                <label for="name"><span>Name <span class="required">*</span></span><input type="text" class="input-field" name="name" onkeyup="matches(this.value)" value="${hero.name}" maxlength="30" required></label>
                 <label for="universe"><span>Universe <span class="required">*</span></span><input type="text" class="input-field" name="universe" value="${hero.universe}" required></label>
                 <label for="power"><span>Power <span class="required">*</span></span><input type="number" class="input-field" name="power" value="${hero.power}" min="0" max="100"></label>
                 <label for="description"><span>Description <span class="required">*</span></span><textarea name="description" class="textarea-field"></textarea></label>

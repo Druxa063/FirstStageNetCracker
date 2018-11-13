@@ -51,7 +51,7 @@ public class HeroRepositoryImpl implements HeroRepository {
     public List<Hero> getByName(String name) throws SQLException {
         List<Hero> list = new ArrayList();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM hero WHERE lower(name) LIKE ? ORDER BY power, name");
-        statement.setString(1, "%" + name.toLowerCase() + "%");
+        statement.setString(1, name.toLowerCase());
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {
             list.add(getHeroFromResultSet(resultSet));
