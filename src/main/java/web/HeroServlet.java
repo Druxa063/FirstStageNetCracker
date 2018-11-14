@@ -126,6 +126,9 @@ public class HeroServlet extends HttpServlet {
             if (id.isEmpty() & repository.getByName(name) != null) {
                 throw new ValidationException("Hero with the same name already exists");
             }
+            if(!id.isEmpty() && !name.equalsIgnoreCase(repository.get(getId(request)).getName())) {
+                throw new ValidationException("Hero with the same name already exists");
+            }
             if (power < 0 || power > 100) {
                 throw new ValidationException("The power should not be less than 0 and greater than 100");
             }

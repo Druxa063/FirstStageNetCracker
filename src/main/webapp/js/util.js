@@ -64,6 +64,8 @@ function updateRow(id) {
     var modal = document.getElementById('saveModal');
     var saveBtnModal = document.getElementById('saveBtnModal');
     var closeBtnModal = document.getElementById('closeBtnModal');
+    var pMatches = document.getElementById("matches");
+    pMatches.innerText = "";
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -71,6 +73,8 @@ function updateRow(id) {
             var form = document.forms["saveForm"];
             form["id"].value = json.id;
             form["name"].value = json.name;
+            form["name"].readOnly = true;
+            form["name"].removeAttribute("onkeyup");
             form["universe"].value = json.universe;
             form["power"].value = json.power;
             form["description"].value = json.description;
@@ -117,15 +121,13 @@ function openModal() {
     var modal = document.getElementById('saveModal');
     var saveBtnModal = document.getElementById('saveBtnModal');
     var closeBtnModal = document.getElementById('closeBtnModal');
+    var pMatches = document.getElementById("matches");
 
     var form = document.forms["saveForm"];
-    form["id"].value = "";
-    form["name"].value = "";
-    form["universe"].value = "";
-    form["power"].value = "";
-    form["description"].value = "";
-    form["alive"].value = "";
-
+    form["name"].removeAttribute("readonly");
+    form["name"].setAttribute("onkeyup", "matchesByName(this.value)");
+    pMatches.innerText = "";
+    form.reset();
     modal.style.display = "block";
 
     closeBtnModal.onclick = function () {
@@ -151,10 +153,13 @@ function search(value) {
     xmlhttp.send();
 }
 
-function matches(value) {
-    alert("");
+function matchesByName(value) {
     var xmlhttp, json, txt = "";
     var pMatches = document.getElementById("matches");
+    if (value.length == 0) {
+        pMatches.innerText = "";
+        return;
+    }
     xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -163,7 +168,11 @@ function matches(value) {
             for (x = 0; x < json.length; x++) {
                 txt = txt.concat(", ", json[x].name);
             }
-            pMatches.innerText = txt.substring(2);
+            if (txt.length == 0) {
+                pMatches.innerText = "";
+                return;
+            }
+            pMatches.innerText = "Hero exists already: " + txt.substring(2);
         }
 
     };
