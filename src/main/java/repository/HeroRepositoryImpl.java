@@ -52,16 +52,16 @@ public class HeroRepositoryImpl implements HeroRepository {
         return hero;
     }
 
-    public Hero getByName(String name) throws SQLException {
-        Hero hero = null;
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM hero WHERE lower(name)=?");
+    public List<Hero> getByName(String name) throws SQLException {
+        List<Hero> list = new ArrayList();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM hero WHERE lower(name) LIKE ? ORDER BY power, name");
         statement.setString(1, name.toLowerCase());
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {
-            hero = getHeroFromResultSet(resultSet);
+            list.add(getHeroFromResultSet(resultSet));
         }
         statement.close();
-        return hero;
+        return list;
     }
 
     public List<Hero> getAll() throws SQLException {

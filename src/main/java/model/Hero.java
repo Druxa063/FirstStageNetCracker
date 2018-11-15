@@ -76,4 +76,18 @@ public class Hero {
     public boolean isNew() {
         return id == null;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\":\"" +id + "\", " +
+                "\"name\":\""  + name + "\", " +
+                "\"universe\":\"" + universe + "\", " +
+                "\"power\":" + power + ", "+
+                "\"description\":\"" + description + "\", " +
+                "\"alive\":" + alive +
+                "}";
+    }
+
+
 }

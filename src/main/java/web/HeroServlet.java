@@ -52,8 +52,8 @@ public class HeroServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        super.destroy();
         try {
+            super.destroy();
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,27 +66,37 @@ public class HeroServlet extends HttpServlet {
         try {
             switch (action == null ? "all" : action) {
                 case "find" :
-                    request.setAttribute("heroes", Arrays.asList(repository.getByName(request.getParameter("nameHero"))));
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    StringBuilder like = new StringBuilder(request.getParameter("nameHero"));
+                    boolean matches = Boolean.parseBoolean(request.getParameter("matches"));
+                    like.append("%");
+                    if (!matches) {
+                        like.insert(0, "%");
+                    }
+                    String json = repository.getByName(like.toString()).toString();
+                    response.getWriter().write(json);
                     log.info("Hero successfully find");
-                    request.getRequestDispatcher("/listHero.jsp").forward(request, response);
                     break;
                 case "delete":
                     int id = getId(request);
                     repository.delete(id);
                     log.info("Hero successfully delete");
-                    response.sendRedirect("heroes");
                     break;
-                case "create":
                 case "update":
-                    Hero hero = action.equals("create") ?
-                            new Hero() : repository.get(getId(request));
-                    request.setAttribute("hero", hero);
-                    log.info("forward to heroForm.jsp ");
-                    request.getRequestDispatcher("/heroForm.jsp").forward(request, response);
+                    Hero hero = repository.get(getId(request));
+                    log.info("forward to saveForm");
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(hero.toString());
+                    break;
+                case "ajax" :
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(repository.getAll().toString());
                     break;
                 case "all":
                 default:
-                    request.setAttribute("heroes", repository.getAll());
                     log.info("forward to heroes");
                     request.getRequestDispatcher("/listHero.jsp").forward(request, response);
                     break;
@@ -112,7 +122,10 @@ public class HeroServlet extends HttpServlet {
             if (name.length() > 30) {
                 throw new ValidationException("The name should not be more than 30 characters");
             }
-            if (repository.getByName(name) != null) {
+            if (id.isEmpty() & repository.getByName(name) != null) {
+                throw new ValidationException("Hero with the same name already exists");
+            }
+            if(!id.isEmpty() && !name.equalsIgnoreCase(repository.get(getId(request)).getName())) {
                 throw new ValidationException("Hero with the same name already exists");
             }
             if (power < 0 || power > 100) {
@@ -128,7 +141,6 @@ public class HeroServlet extends HttpServlet {
             );
             repository.save(hero);
             log.info("Hero successfully create/update");
-            response.sendRedirect("/heroes");
         } catch (ValidationException e) {
             log.debug("Exception validation : ", e);
             request.setAttribute("message", e.getMessage());
