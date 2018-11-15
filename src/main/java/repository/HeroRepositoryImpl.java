@@ -28,15 +28,16 @@ public class HeroRepositoryImpl implements HeroRepository {
         statement.setInt(3, hero.getPower());
         statement.setString(4, hero.getDescription());
         statement.setBoolean(5, hero.isAlive());
+        boolean execute = statement.execute();
         statement.close();
-        return statement.execute();
+        return execute;
     }
 
     public boolean delete(int id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("DELETE FROM hero WHERE id=?");
         statement.setInt(1, id);
-        statement.close();
         boolean execute = statement.execute();
+        statement.close();
         return execute;
     }
 
