@@ -75,7 +75,6 @@ public class HeroServlet extends HttpServlet {
                         like.insert(0, "%");
                     }
                     String json = repository.getByName(like.toString()).toString();
-                    System.out.println(json);
                     response.getWriter().write(json);
                     log.info("Hero successfully find");
                     break;

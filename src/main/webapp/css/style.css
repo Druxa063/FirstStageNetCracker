@@ -60,7 +60,7 @@ tr[data-heroAlive="false"] {
     height:200px;
     width: 70%;
 }
-.form-style-2 .button{
+.button{
     border: none;
     padding: 8px 15px 8px 15px;
     background: #FF8500;
@@ -72,7 +72,23 @@ tr[data-heroAlive="false"] {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
 }
-.form-style-2 .button:hover{
+.button:hover{
+    background: #EA7B00;
+    color: #fff;
+}
+.buttonDelete{
+    border: none;
+    padding: 8px 15px 8px 15px;
+    background: #FF8500;
+    color: #fff;
+    box-shadow: 1px 1px 4px #DADADA;
+    -moz-box-shadow: 1px 1px 4px #DADADA;
+    -webkit-box-shadow: 1px 1px 4px #DADADA;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+.buttonDelete:hover{
     background: #EA7B00;
     color: #fff;
 }

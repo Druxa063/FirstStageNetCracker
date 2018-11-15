@@ -12,8 +12,16 @@
 }
 .modal-content{
     background-color: #fefefe;
-    margin: 5% auto;
+    margin: auto;
     padding: 10px;
     border: 1px solid #888;
     width: 40%;
+}
+
+.modal-content-delete {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 10%;
 }

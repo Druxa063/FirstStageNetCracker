@@ -26,9 +26,10 @@
     </tbody>
 </table>
 <div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <button id="deleteBtnModal">Delete</button>
-        <button id="cancelBtnModal">Cancel</button>
+    <div class="modal-content-delete">
+        <p>Are you sure?</p>
+        <button id="deleteBtnModal" class="buttonDelete">Delete</button>
+        <button id="cancelBtnModal" class="buttonDelete">Cancel</button>
     </div>
 </div>
 <div id="saveModal" class="modal">
@@ -44,8 +45,11 @@
                 <label for="alive"><span>Alive </span><input type="radio" class="input-field" name="alive" value="true" checked></label>
                 <label for="alive"><span>Dead </span><input type="radio" class="input-field" name="alive" value="false"></label>
             </form>
-            <label><span> </span><button id="saveBtnModal" onclick="save()">Save</button></label>
-            <label><span> </span><button id="closeBtnModal">Close</button></label>
+            <label><span> </span>
+                <button id="saveBtnModal" class="button" onclick="save()">Save</button>
+                <button id="closeBtnModal" class="button">Close</button>
+            </label>
+
         </div>
     </div>
 </div>
