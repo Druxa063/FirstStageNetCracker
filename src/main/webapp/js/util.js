@@ -95,23 +95,16 @@ function updateRow(id) {
     };
 }
 
-function save() {
-    var form, id, name, universe, power, description, alive;
+function save(id, name, universe, power, description, alive) {
     var modal = document.getElementById('saveModal');
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+            alert("ok");
             modal.style.display = "none";
             loadTable();
         }
     };
-    form = document.forms["saveForm"];
-    id = form["id"].value;
-    name = form["name"].value;
-    universe = form["universe"].value;
-    power = form["power"].value;
-    description = form["description"].value;
-    alive = form["alive"].value;
     xmlhttp.open("POST", "heroes", true);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlhttp.send("id=" + id + "&" + "name=" + name + "&" + "universe=" + universe + "&" + "power=" + power + "&" + "description=" + description + "&" + "alive=" + alive);
@@ -178,4 +171,46 @@ function matchesByName(value) {
     };
     xmlhttp.open("GET", "heroes?action=find&nameHero=" + value + "&matches=true", true);
     xmlhttp.send();
+}
+
+function validationSaveForm() {
+    var form, id, name, universe, power, description, alive;
+    form = document.forms["saveForm"];
+    id = form["id"].value;
+    name = form["name"].value;
+    universe = form["universe"].value;
+    power = form["power"].value;
+    description = form["description"].value;
+    alive = form["alive"].value;
+    if (document.getElementById("matches").innerText.indexOf(name) !== -1) {
+        errorPrint("Hero with the same name already exists");
+        return;
+    }
+    if (name.length > 30) {
+        errorPrint("The name should not be more than 30 characters");
+        return;
+    }
+    if (power < 0 || power > 100) {
+        errorPrint("The power should not be less than 0 and greater than 100");
+        return;
+    }
+    save(id, name, universe, power, description, alive);
+}
+
+function errorPrint(errorText) {
+    var modal = document.getElementById("validModal");
+    var closeBtn = document.getElementById("closeBtn");
+    var validText = document.getElementById("validText");
+
+    validText.innerText = errorText;
+    modal.style.display = "block";
+
+    closeBtn.onclick = function () {
+        modal.style.display = "none";
+    };
+    // window.onclick = function (ev) {
+    //     if (ev.target == modal) {
+    //         modal.style.display = "none";
+    //     }
+    // };
 }

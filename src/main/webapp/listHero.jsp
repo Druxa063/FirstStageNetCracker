@@ -37,20 +37,26 @@
         <div class="form-style-2">
             <form name="saveForm">
                 <input type="hidden" name="id" value="${hero.id}">
-                <label for="name"><span>Name <span class="required">*</span></span><input type="text" class="input-field" name="name" value="${hero.name}" maxlength="30" required></label>
+                <label for="name"><span>Name <span class="required">*</span></span><input type="text" class="input-field" name="name" value="${hero.name}"></label>
                 <label><p id="matches"></p></label>
-                <label for="universe"><span>Universe <span class="required">*</span></span><input type="text" class="input-field" name="universe" value="${hero.universe}" required></label>
+                <label for="universe"><span>Universe <span class="required">*</span></span><input type="text" class="input-field" name="universe" value="${hero.universe}"></label>
                 <label for="power"><span>Power <span class="required">*</span></span><input type="number" class="input-field" name="power" value="${hero.power}" min="0" max="100"></label>
                 <label for="description"><span>Description <span class="required">*</span></span><textarea name="description" class="textarea-field"></textarea></label>
                 <label for="alive"><span>Alive </span><input type="radio" class="input-field" name="alive" value="true" checked></label>
                 <label for="alive"><span>Dead </span><input type="radio" class="input-field" name="alive" value="false"></label>
             </form>
             <label><span> </span>
-                <button id="saveBtnModal" class="button" onclick="save()">Save</button>
+                <button id="saveBtnModal" class="button" onclick="validationSaveForm()">Save</button>
                 <button id="closeBtnModal" class="button">Close</button>
             </label>
 
         </div>
+    </div>
+</div>
+<div id="validModal" class="modal">
+    <div class="modal-content-validation">
+        <span id="closeBtn" class="closeBtn">&times;</span>
+        <p id="validText"></p>
     </div>
 </div>
 </body>

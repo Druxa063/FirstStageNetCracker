@@ -122,10 +122,10 @@ public class HeroServlet extends HttpServlet {
             if (name.length() > 30) {
                 throw new ValidationException("The name should not be more than 30 characters");
             }
-            if (id.isEmpty() & !repository.getByName(name).isEmpty()) {
+            if (id.isEmpty() & !repository.getByName(name).isEmpty()) { //проверка при создании героя на дубликат
                 throw new ValidationException("Hero with the same name already exists");
             }
-            if(!id.isEmpty() && !name.equalsIgnoreCase(repository.get(getId(request)).getName())) {
+            if(!id.isEmpty() && !name.equalsIgnoreCase(repository.get(getId(request)).getName())) { //проверка при изменении имени на другое
                 throw new ValidationException("Hero with the same name already exists");
             }
             if (power < 0 || power > 100) {
@@ -142,9 +142,9 @@ public class HeroServlet extends HttpServlet {
             repository.save(hero);
             log.info("Hero successfully create/update");
         } catch (ValidationException e) {
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(e.getMessage());
             log.debug("Exception validation : ", e);
-            request.setAttribute("message", e.getMessage());
-            request.getRequestDispatcher("/validation.jsp").forward(request, response);
         } catch (SQLException e) {
             log.debug("SQLException in doPost : ", e);
             e.printStackTrace();

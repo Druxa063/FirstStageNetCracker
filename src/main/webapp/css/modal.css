@@ -10,6 +10,7 @@
     background-color: rgba(0, 0, 0, 0.9);
     transform: translate(-50%, -50%);
 }
+/*save model*/
 .modal-content{
     background-color: #fefefe;
     margin: auto;
@@ -17,11 +18,31 @@
     border: 1px solid #888;
     width: 40%;
 }
-
+/*delete modal*/
 .modal-content-delete {
     background-color: #fefefe;
     margin: 10% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 10%;
+}
+/*validation modal*/
+.modal-content-validation {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+}
+.closeBtn{
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.closeBtn:hover,
+.closeBtn:focus{
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
