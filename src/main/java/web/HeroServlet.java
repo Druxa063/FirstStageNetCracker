@@ -143,6 +143,7 @@ public class HeroServlet extends HttpServlet {
             log.info("Hero successfully create/update");
         } catch (ValidationException e) {
             response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write(e.getMessage());
             log.debug("Exception validation : ", e);
         } catch (SQLException e) {

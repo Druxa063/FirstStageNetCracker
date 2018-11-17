@@ -100,9 +100,12 @@ function save(id, name, universe, power, description, alive) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            alert("ok");
+            alert(this.responseText);
             modal.style.display = "none";
             loadTable();
+        }
+        if (this.readyState == 4 && this.status == 400) {
+            errorPrint(this.responseText)
         }
     };
     xmlhttp.open("POST", "heroes", true);
