@@ -136,8 +136,9 @@ function openModal() {
     };
 }
 
-function search(value) {
-    var xmlhttp, json;
+function search() {
+    var xmlhttp, json, nameHero;
+    nameHero = document.getElementById("nameHero");
     xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -145,8 +146,21 @@ function search(value) {
             paint(json);
         }
     };
-    xmlhttp.open("GET", "heroes?action=find&nameHero=" + value + "&matches=false", true);
+    xmlhttp.open("GET", "heroes?action=find&nameHero=" + nameHero.value + "&matches=false", true);
     xmlhttp.send();
+}
+
+function searchWithoutAjax(value) {
+    var table = document.getElementById("tableHeroBody");
+    var x;
+    var childNodes = table.childNodes;
+    for (x = 0; x < childNodes.length; x++) {
+        if (childNodes[x].childNodes[0].childNodes[0].nodeValue.toLowerCase().indexOf(value.toLowerCase()) !== -1) {
+           childNodes[x].hidden = false;
+        } else {
+            childNodes[x].hidden = true;
+        }
+    }
 }
 
 function matchesByName(value) {
@@ -160,15 +174,11 @@ function matchesByName(value) {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             json = JSON.parse(this.responseText);
-            var x;
-            for (x = 0; x < json.length; x++) {
-                txt = txt.concat(", ", json[x].name);
-            }
-            if (txt.length == 0) {
+            if (json.length == 0) {
                 pMatches.innerText = "";
                 return;
             }
-            pMatches.innerText = "Hero exists already: " + txt.substring(2);
+            pMatches.innerText = "Hero exists already";
         }
 
     };
@@ -211,9 +221,64 @@ function errorPrint(errorText) {
     closeBtn.onclick = function () {
         modal.style.display = "none";
     };
-    // window.onclick = function (ev) {
-    //     if (ev.target == modal) {
-    //         modal.style.display = "none";
-    //     }
-    // };
+}
+
+function sortNameOrPower(sortParam) {
+    var xmlhttp, json, nameHero;
+    nameHero = document.getElementById("nameHero");
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            json = JSON.parse(this.responseText);
+            paint(json);
+        }
+    };
+    xmlhttp.open("GET", "heroes?action=sort&sortParam=" + sortParam + "&nameHero=" + nameHero.value, true);
+    xmlhttp.send();
+}
+
+function sortNameJS() {
+    paint(tableToArray().sort(function (a, b) {
+        var x = a.name;
+        var y = b.name;
+        if (x < y) {return -1;}
+        if (x > y) {return 1;}
+        return 0;
+    }));
+}
+function sortPowerJS() {
+    paint(tableToArray().sort(function (a, b) {
+        return a.power-b.power;
+    }));
+}
+
+function tableToArray() {
+    // https://gist.github.com/mattheo-gist/4151867
+    var table = document.getElementById("tableHero");
+    var rows = table.rows;
+    var propCells = rows[0].cells;
+    var propNames = [];
+    var results = [];
+    var obj, row, cells;
+
+    // Use the first row for the property names
+    // Could use a header section but result is the same if
+    // there is only one header row
+    for (var i=0, iLen=propCells.length; i<iLen-2; i++) {
+        propNames.push(propCells[i].textContent.toLowerCase() || propCells[i].innerText.toLowerCase());
+    }
+
+    // Use the rows for data
+    // Could use tbody rows here to exclude header & footer
+    // but starting from 1 gives required result
+    for (var j=1, jLen=rows.length; j<jLen; j++) {
+        cells = rows[j].cells;
+        obj = {};
+
+        for (var k=0; k<iLen-2; k++) {
+            obj[propNames[k]] = cells[k].textContent || cells[k].innerText;
+        }
+        results.push(obj)
+    }
+    return results;
 }

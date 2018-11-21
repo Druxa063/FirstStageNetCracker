@@ -10,7 +10,25 @@
 <body onload="loadTable()">
 <button onclick="openModal()">Add Hero</button>
 <div class="form-style-2">
-    <label for="nameHero"><span>Name Hero </span><input class="input-field" type="text" name="nameHero" onkeyup="search(this.value)" placeholder="Enter name hero for search"></label>
+    <label for="nameHero">
+        <span>Name Hero </span>
+        <input class="input-field" type="text" id="nameHero" name="nameHero" onkeyup="searchWithoutAjax(this.value)" placeholder="Enter name hero for search">
+        <button onclick="search()">Search</button>
+    </label>
+</div>
+<div class="form-style-2">
+    <label>
+        <span>Sort name/power </span>
+        <button onclick="sortNameOrPower('name')">Name</button>
+        <button onclick="sortNameOrPower('power')">Power</button>
+    </label>
+</div>
+<div class="form-style-2">
+    <label>
+        <span>Sort name/power JS</span>
+        <button onclick="sortNameJS()">Name</button>
+        <button onclick="sortPowerJS()">Power</button>
+    </label>
 </div>
 <table id="tableHero" border="1">
     <thead>

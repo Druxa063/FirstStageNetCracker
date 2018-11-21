@@ -59,9 +59,24 @@ public class HeroRepositoryImpl implements HeroRepository {
     }
 
     public List<Hero> getByName(String name) throws SQLException {
-        List<Hero> list = new ArrayList();
+        List<Hero> list = new ArrayList<Hero>();
         Connection connection = DBUtil.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM hero WHERE lower(name) LIKE ? ORDER BY power, name");
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM hero WHERE lower(name) LIKE ?");
+        statement.setString(1, name.toLowerCase());
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            list.add(getHeroFromResultSet(resultSet));
+        }
+        resultSet.close();
+        statement.close();
+        connection.close();
+        return list;
+    }
+
+    public List<Hero> getByNameSortNameOrPower(String name, String sort) throws SQLException {
+        List<Hero> list = new ArrayList<Hero>();
+        Connection connection = DBUtil.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM hero WHERE lower(name) LIKE ? ORDER BY " + sort);
         statement.setString(1, name.toLowerCase());
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {
@@ -77,7 +92,7 @@ public class HeroRepositoryImpl implements HeroRepository {
         List<Hero> list = new ArrayList<Hero>();
         Connection connection = DBUtil.getConnection();
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM hero ORDER BY power, name");
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM hero");
         while (resultSet.next()) {
             list.add(getHeroFromResultSet(resultSet));
         }

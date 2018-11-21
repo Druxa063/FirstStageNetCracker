@@ -15,5 +15,7 @@ public interface HeroRepository {
 
     List<Hero> getByName(String name) throws SQLException;
 
+    List<Hero> getByNameSortNameOrPower(String name, String sort) throws SQLException;
+
     List<Hero> getAll() throws SQLException;
 }

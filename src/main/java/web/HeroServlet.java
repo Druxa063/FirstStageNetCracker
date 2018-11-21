@@ -47,30 +47,42 @@ public class HeroServlet extends HttpServlet {
                     response.setCharacterEncoding("UTF-8");
                     StringBuilder like = new StringBuilder(request.getParameter("nameHero"));
                     boolean matches = Boolean.parseBoolean(request.getParameter("matches"));
-                    like.append("%");
                     if (!matches) {
                         like.insert(0, "%");
+                        like.append("%");
                     }
                     String json = repository.getByName(like.toString()).toString();
                     response.getWriter().write(json);
-                    log.info("Hero successfully find");
+                    log.info("Hero successfully found");
+                    break;
+                case "sort" :
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    String sortParam = request.getParameter("sortParam");
+                    StringBuilder nameHero = new StringBuilder(request.getParameter("nameHero"));
+                    nameHero.insert(0, "%");
+                    nameHero.append("%");
+                    String sortJson = repository.getByNameSortNameOrPower(nameHero.toString(), sortParam).toString();
+                    response.getWriter().write(sortJson);
+                    log.info("Hero successfully sorted by " + sortParam);
                     break;
                 case "delete":
                     int id = getId(request);
                     repository.delete(id);
-                    log.info("Hero successfully delete");
+                    log.info("Hero successfully deleted");
                     break;
                 case "update":
                     Hero hero = repository.get(getId(request));
-                    log.info("forward to saveForm");
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write(hero.toString());
+                    log.info("forward to saveForm");
                     break;
                 case "ajax" :
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write(repository.getAll().toString());
+                    log.info("getAll through ajax");
                     break;
                 case "all":
                 default:
