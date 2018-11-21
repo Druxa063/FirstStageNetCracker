@@ -12,4 +12,10 @@
     <servlet-name>heroes</servlet-name>
     <url-pattern>/heroes</url-pattern>
   </servlet-mapping>
+  <resource-ref>
+    <description>DB Connection</description>
+    <res-ref-name>jdbc/hero</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
 </web-app>

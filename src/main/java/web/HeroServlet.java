@@ -24,40 +24,17 @@ public class HeroServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(HeroServlet.class);
 
-    private Connection connection;
     private HeroRepository repository;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        try {
-            Properties properties = new Properties();
-            URL location = HeroServlet.class.getProtectionDomain().getCodeSource().getLocation();
-            properties.load(new FileInputStream(location.getFile() + "postgres.properties"));
-            String driver = properties.getProperty("database.driver");
-            String url = properties.getProperty("database.url");
-            String user = properties.getProperty("database.username");
-            String password = properties.getProperty("database.password");
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url, user, password);
-            repository = new HeroRepositoryImpl(connection);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        repository = new HeroRepositoryImpl();
     }
 
     @Override
     public void destroy() {
-        try {
-            super.destroy();
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        super.destroy();
     }
 
     @Override
