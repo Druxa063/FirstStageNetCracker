@@ -12,9 +12,12 @@ function loadTable() {
 }
 
 function paint(json) {
-    var table, x, txt="";
+    var table, x, txt="", tr;
+    table = document.getElementById("tableHeroBody");
+    table.innerHTML = "";
     for (x in json) {
-        txt += "<tr data-heroAlive=\"" + json[x].alive + "\"><td>" +
+        tr = document.createElement("tr");
+        txt = "<td>" +
                 json[x].name +
             "</td><td>" +
                 json[x].universe +
@@ -28,9 +31,12 @@ function paint(json) {
                 "<button id='deleteBtn' onclick='deleteRow(" + json[x].id + ")'>Delete</button>" +
             "</td><td>" +
                 "<button id='updateBtn' onclick='updateRow(" + json[x].id + ")'>Update</button>" +
-            "</td></tr>";
+            "</td>";
+        tr.innerHTML = txt;
+        tr.setAttribute("data-heroAlive", json[x].alive);
+        tr.hidden = json[x].hasOwnProperty("hiddenRow") ? json[x].hiddenRow : false;
+        table.appendChild(tr);
     }
-    document.getElementById("tableHeroBody").innerHTML = txt;
 }
 
 function deleteRow(id) {
@@ -278,6 +284,7 @@ function tableToArray() {
         for (var k=0; k<iLen-2; k++) {
             obj[propNames[k]] = cells[k].textContent || cells[k].innerText;
         }
+        obj.hiddenRow = rows[j].hidden;
         results.push(obj)
     }
     return results;
