@@ -106,7 +106,6 @@ function save(id, name, universe, power, description, alive) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            alert(this.responseText);
             modal.style.display = "none";
             loadTable();
         }
@@ -130,6 +129,7 @@ function openModal() {
     form["name"].setAttribute("onkeyup", "matchesByName(this.value)");
     pMatches.innerText = "";
     form.reset();
+    form["power"].value = 0;
     modal.style.display = "block";
 
     closeBtnModal.onclick = function () {
@@ -209,7 +209,7 @@ function validationSaveForm() {
         errorPrint("The name should not be more than 30 characters");
         return;
     }
-    if (power < 0 || power > 100) {
+    if (power < 0 || power > 100 || power == "") {
         errorPrint("The power should not be less than 0 and greater than 100");
         return;
     }
