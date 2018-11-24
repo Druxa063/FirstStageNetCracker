@@ -10,7 +10,8 @@ CREATE TABLE hero
   universe      VARCHAR(100)      NOT NULL,
   power         INTEGER           NOT NULL,
   description   VARCHAR(255),
-  alive         BOOLEAN           NOT NULL
+  alive         BOOLEAN           NOT NULL,
+  logo          VARCHAR
 );
 CREATE UNIQUE INDEX hero_unique_name ON hero (name);
 

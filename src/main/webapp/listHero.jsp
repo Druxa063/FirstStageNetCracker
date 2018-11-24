@@ -37,6 +37,7 @@
     <th>Power</th>
     <th>Description</th>
     <th>Alive</th>
+    <th>Logo</th>
     <th>Delete</th>
     <th>Update</th>
     </thead>
@@ -62,6 +63,7 @@
                 <label for="description"><span>Description <span class="required">*</span></span><textarea name="description" class="textarea-field"></textarea></label>
                 <label for="alive"><span>Alive </span><input type="radio" class="input-field" name="alive" value="true" checked></label>
                 <label for="alive"><span>Dead </span><input type="radio" class="input-field" name="alive" value="false"></label>
+                <label for="logo"><span>Logo </span><input type="file" class="input-field" name="logo"></label>
             </form>
             <label><span> </span>
                 <button id="saveBtnModal" class="button" onclick="validationSaveForm()">Save</button>

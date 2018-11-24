@@ -16,17 +16,18 @@ public class HeroRepositoryImpl implements HeroRepository {
         Connection connection = DBUtil.getConnection();
         PreparedStatement statement = null;
         if (hero.isNew()) {
-            statement = connection.prepareStatement("INSERT INTO hero (name, universe, power, description, alive) VALUES (?, ?, ?, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO hero (name, universe, power, description, alive, logo) VALUES (?, ?, ?, ?, ?, ?)");
         } else {
             statement = connection.prepareStatement("UPDATE hero SET " +
-                    "name=?, universe=?, power=?, description=?, alive=? WHERE id=?");
-            statement.setInt(6, hero.getId());
+                    "name=?, universe=?, power=?, description=?, alive=?, logo=? WHERE id=?");
+            statement.setInt(7, hero.getId());
         }
         statement.setString(1, hero.getName());
         statement.setString(2, hero.getUniverse());
         statement.setInt(3, hero.getPower());
         statement.setString(4, hero.getDescription());
         statement.setBoolean(5, hero.isAlive());
+        statement.setString(6, hero.getLogo());
         boolean execute = statement.execute();
         statement.close();
         connection.close();
@@ -110,6 +111,7 @@ public class HeroRepositoryImpl implements HeroRepository {
         hero.setPower(resultSet.getInt(4));
         hero.setDescription(resultSet.getString(5));
         hero.setAlive(resultSet.getBoolean(6));
+        hero.setLogo(resultSet.getString(7));
         return hero;
     }
 }

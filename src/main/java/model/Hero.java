@@ -8,21 +8,23 @@ public class Hero {
     private int power;
     private String description;
     private boolean alive;
+    private String logo;
 
     public Hero() {
     }
 
-    public Hero(String name, String universe, int power, String description, boolean alive) {
-        this(null, name, universe, power, description, alive);
+    public Hero(String name, String universe, int power, String description, boolean alive, String logo) {
+        this(null, name, universe, power, description, alive, logo);
     }
 
-    public Hero(Integer id, String name, String universe, int power, String description, boolean alive) {
+    public Hero(Integer id, String name, String universe, int power, String description, boolean alive, String logo) {
         this.id = id;
         this.name = name;
         this.universe = universe;
         this.power = power;
         this.description = description;
         this.alive = alive;
+        this.logo = logo;
     }
 
     public Integer getId() {
@@ -77,15 +79,25 @@ public class Hero {
         return id == null;
     }
 
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
     @Override
     public String toString() {
+        String logo = this.logo == null ? "" : this.logo;
         return "{" +
                 "\"id\":\"" +id + "\", " +
                 "\"name\":\""  + name + "\", " +
                 "\"universe\":\"" + universe + "\", " +
                 "\"power\":" + power + ", "+
                 "\"description\":\"" + description + "\", " +
-                "\"alive\":" + alive +
+                "\"alive\":" + alive + ", " +
+                "\"logo\":\"" + logo + "\"" +
                 "}";
     }
 

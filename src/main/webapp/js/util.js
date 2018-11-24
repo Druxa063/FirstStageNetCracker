@@ -17,22 +17,44 @@ function paint(json) {
     table.innerHTML = "";
     for (x in json) {
         tr = document.createElement("tr");
-        txt = "<td>" +
-                json[x].name +
-            "</td><td>" +
-                json[x].universe +
-            "</td><td>" +
-                json[x].power +
-            "</td><td>" +
-                json[x].description +
-            "</td><td>" +
-                json[x].alive +
-            "</td><td>" +
-                "<button id='deleteBtn' onclick='deleteRow(" + json[x].id + ")'>Delete</button>" +
-            "</td><td>" +
-                "<button id='updateBtn' onclick='updateRow(" + json[x].id + ")'>Update</button>" +
-            "</td>";
-        tr.innerHTML = txt;
+        var tdName = document.createElement("td");
+        tdName.innerText = json[x].name;
+        tr.appendChild(tdName);
+        var tdUniverse = document.createElement("td");
+        tdUniverse.innerText = json[x].universe;
+        tr.appendChild(tdUniverse);
+        var tdPower = document.createElement("td");
+        tdPower.innerText = json[x].power;
+        tr.appendChild(tdPower);
+        var tdDescription = document.createElement("td");
+        tdDescription.innerText = json[x].description;
+        tr.appendChild(tdDescription);
+        var tdAlive = document.createElement("td");
+        tdAlive.innerText = json[x].alive;
+        tr.appendChild(tdAlive);
+        var tdLogo = document.createElement("td");
+        if (json[x].logo.length != 0) {
+            var img = document.createElement("img");
+            img.src = atob(json[x].logo);
+            img.width = 40;
+            img.height = 40;
+            tdLogo.appendChild(img);
+        }
+        tr.appendChild(tdLogo);
+        var tdDelete = document.createElement("td");
+        var deleteBtn = document.createElement("button");
+        deleteBtn.setAttribute("id", "deleteBtn");
+        deleteBtn.setAttribute("onclick", "deleteRow(" + json[x].id + ")");
+        deleteBtn.innerText = "Delete";
+        tdDelete.appendChild(deleteBtn);
+        tr.appendChild(tdDelete);
+        var tdUpdate = document.createElement("td");
+        var updateBtn = document.createElement("button");
+        updateBtn.setAttribute("id", "updateBtn");
+        updateBtn.setAttribute("onclick", "updateRow(" + json[x].id + ")");
+        updateBtn.innerText = "Update";
+        tdUpdate.appendChild(updateBtn);
+        tr.appendChild(tdUpdate);
         tr.setAttribute("data-heroAlive", json[x].alive);
         tr.hidden = json[x].hasOwnProperty("hiddenRow") ? json[x].hiddenRow : false;
         table.appendChild(tr);
@@ -85,11 +107,12 @@ function updateRow(id) {
             form["power"].value = json.power;
             form["description"].value = json.description;
             form["alive"].value = json.alive;
+            form["logo"].value = "";
+            modal.style.display = "block";
         }
     };
     xmlhttp.open("GET", "heroes?action=update&id=" + id, true);
     xmlhttp.send();
-    modal.style.display = "block";
 
     closeBtnModal.onclick = function () {
         modal.style.display = "none";
@@ -101,7 +124,7 @@ function updateRow(id) {
     };
 }
 
-function save(id, name, universe, power, description, alive) {
+function save(id, name, universe, power, description, alive, logo) {
     var modal = document.getElementById('saveModal');
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
@@ -113,9 +136,15 @@ function save(id, name, universe, power, description, alive) {
             errorPrint(this.responseText)
         }
     };
-    xmlhttp.open("POST", "heroes", true);
-    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xmlhttp.send("id=" + id + "&" + "name=" + name + "&" + "universe=" + universe + "&" + "power=" + power + "&" + "description=" + description + "&" + "alive=" + alive);
+    var reader = new FileReader();
+    var base64;
+    reader.onloadend = function() {
+        base64 = reader.result;
+        xmlhttp.open("POST", "heroes", true);
+        xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xmlhttp.send("id=" + id + "&" + "name=" + name + "&" + "universe=" + universe + "&" + "power=" + power + "&" + "description=" + description + "&" + "alive=" + alive + "&" + "logo=" + btoa(base64));
+    };
+    reader.readAsDataURL(logo);
 }
 
 function openModal() {
@@ -193,7 +222,7 @@ function matchesByName(value) {
 }
 
 function validationSaveForm() {
-    var form, id, name, universe, power, description, alive;
+    var form, id, name, universe, power, description, alive, logo;
     form = document.forms["saveForm"];
     id = form["id"].value;
     name = form["name"].value;
@@ -201,6 +230,7 @@ function validationSaveForm() {
     power = form["power"].value;
     description = form["description"].value;
     alive = form["alive"].value;
+    logo = form["logo"].files[0];
     if (document.getElementById("matches").innerText.indexOf(name) !== -1) {
         errorPrint("Hero with the same name already exists");
         return;
@@ -213,7 +243,7 @@ function validationSaveForm() {
         errorPrint("The power should not be less than 0 and greater than 100");
         return;
     }
-    save(id, name, universe, power, description, alive);
+    save(id, name, universe, power, description, alive, logo);
 }
 
 function errorPrint(errorText) {
@@ -244,48 +274,32 @@ function sortNameOrPower(sortParam) {
 }
 
 function sortNameJS() {
-    paint(tableToArray().sort(function (a, b) {
-        var x = a.name;
-        var y = b.name;
+    var table = document.getElementById("tableHeroBody");
+    var rows = table.rows;
+    rows = Array.prototype.slice.call(rows);
+    rows.sort(function (a, b) {
+        var x = a.cells[0].innerText.toLowerCase();
+        var y = b.cells[0].innerText.toLowerCase();
         if (x < y) {return -1;}
         if (x > y) {return 1;}
         return 0;
-    }));
+    });
+    for (var x=0; x < rows.length; x++) {
+        table.appendChild(rows[x]);
+    }
 }
 function sortPowerJS() {
-    paint(tableToArray().sort(function (a, b) {
-        return a.power-b.power;
-    }));
-}
-
-function tableToArray() {
-    // https://gist.github.com/mattheo-gist/4151867
-    var table = document.getElementById("tableHero");
+    var table = document.getElementById("tableHeroBody");
     var rows = table.rows;
-    var propCells = rows[0].cells;
-    var propNames = [];
-    var results = [];
-    var obj, row, cells;
-
-    // Use the first row for the property names
-    // Could use a header section but result is the same if
-    // there is only one header row
-    for (var i=0, iLen=propCells.length; i<iLen-2; i++) {
-        propNames.push(propCells[i].textContent.toLowerCase() || propCells[i].innerText.toLowerCase());
+    rows = Array.prototype.slice.call(rows);
+    rows.sort(function (a, b) {
+        var x = a.cells[2].innerText;
+        var y = b.cells[2].innerText;
+        if (x < y) {return -1;}
+        if (x > y) {return 1;}
+        return 0;
+    });
+    for (var x=0; x < rows.length; x++) {
+        table.appendChild(rows[x]);
     }
-
-    // Use the rows for data
-    // Could use tbody rows here to exclude header & footer
-    // but starting from 1 gives required result
-    for (var j=1, jLen=rows.length; j<jLen; j++) {
-        cells = rows[j].cells;
-        obj = {};
-
-        for (var k=0; k<iLen-2; k++) {
-            obj[propNames[k]] = cells[k].textContent || cells[k].innerText;
-        }
-        obj.hiddenRow = rows[j].hidden;
-        results.push(obj)
-    }
-    return results;
 }

@@ -81,7 +81,8 @@ public class HeroServlet extends HttpServlet {
                 case "ajax" :
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write(repository.getAll().toString());
+                    String allJSON = repository.getAll().toString();
+                    response.getWriter().write(allJSON);
                     log.info("getAll through ajax");
                     break;
                 case "all":
@@ -108,6 +109,7 @@ public class HeroServlet extends HttpServlet {
             int power = Integer.parseInt(request.getParameter("power"));
             String description = request.getParameter("description");
             boolean alive = Boolean.parseBoolean(request.getParameter("alive"));
+            String logo = request.getParameter("logo");
             if (name.length() > 30) {
                 throw new ValidationException("The name should not be more than 30 characters");
             }
@@ -126,7 +128,8 @@ public class HeroServlet extends HttpServlet {
                     universe,
                     power,
                     description,
-                    alive
+                    alive,
+                    logo
             );
             repository.save(hero);
             log.info("Hero successfully create/update");
