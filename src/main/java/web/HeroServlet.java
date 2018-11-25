@@ -109,7 +109,11 @@ public class HeroServlet extends HttpServlet {
             int power = Integer.parseInt(request.getParameter("power"));
             String description = request.getParameter("description");
             boolean alive = Boolean.parseBoolean(request.getParameter("alive"));
+            String phone = request.getParameter("phone");
             String logo = request.getParameter("logo");
+            if (!phone.matches("[+]7-\\d{3}-\\d{3}-\\d{2}-\\d{2}")) {
+                throw new ValidationException("The number phone no correct");
+            }
             if (name.length() > 30) {
                 throw new ValidationException("The name should not be more than 30 characters");
             }
@@ -129,6 +133,7 @@ public class HeroServlet extends HttpServlet {
                     power,
                     description,
                     alive,
+                    phone,
                     logo
             );
             repository.save(hero);

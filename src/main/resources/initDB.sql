@@ -11,6 +11,7 @@ CREATE TABLE hero
   power         INTEGER           NOT NULL,
   description   VARCHAR(255),
   alive         BOOLEAN           NOT NULL,
+  phone         VARCHAR(16),
   logo          VARCHAR
 );
 CREATE UNIQUE INDEX hero_unique_name ON hero (name);

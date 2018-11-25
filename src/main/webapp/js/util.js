@@ -32,6 +32,9 @@ function paint(json) {
         var tdAlive = document.createElement("td");
         tdAlive.innerText = json[x].alive;
         tr.appendChild(tdAlive);
+        var tdPhone = document.createElement("td");
+        tdPhone.innerText = json[x].phone;
+        tr.appendChild(tdPhone);
         var tdLogo = document.createElement("td");
         if (json[x].logo.length != 0) {
             var img = document.createElement("img");
@@ -107,6 +110,7 @@ function updateRow(id) {
             form["power"].value = json.power;
             form["description"].value = json.description;
             form["alive"].value = json.alive;
+            form["phone"].value = json.phone;
             form["logo"].value = "";
             modal.style.display = "block";
         }
@@ -124,7 +128,7 @@ function updateRow(id) {
     };
 }
 
-function save(id, name, universe, power, description, alive, logo) {
+function save(id, name, universe, power, description, alive, phone, logo) {
     var modal = document.getElementById('saveModal');
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
@@ -136,15 +140,22 @@ function save(id, name, universe, power, description, alive, logo) {
             errorPrint(this.responseText)
         }
     };
-    var reader = new FileReader();
-    var base64;
-    reader.onloadend = function() {
-        base64 = reader.result;
+    phone = encodeURIComponent(phone);
+    if (logo !== undefined) {
+        var reader = new FileReader();
+        var base64;
+        reader.onloadend = function () {
+            base64 = reader.result;
+            xmlhttp.open("POST", "heroes", true);
+            xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xmlhttp.send("id=" + id + "&" + "name=" + name + "&" + "universe=" + universe + "&" + "power=" + power + "&" + "description=" + description + "&" + "alive=" + alive + "&" + "phone=" + phone + "&" + "logo=" + btoa(base64));
+        };
+        reader.readAsDataURL(logo);
+    } else {
         xmlhttp.open("POST", "heroes", true);
         xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xmlhttp.send("id=" + id + "&" + "name=" + name + "&" + "universe=" + universe + "&" + "power=" + power + "&" + "description=" + description + "&" + "alive=" + alive + "&" + "logo=" + btoa(base64));
-    };
-    reader.readAsDataURL(logo);
+        xmlhttp.send("id=" + id + "&" + "name=" + name + "&" + "universe=" + universe + "&" + "power=" + power + "&" + "description=" + description + "&" + "alive=" + alive + "&" + "phone=" + phone);
+    }
 }
 
 function openModal() {
@@ -158,6 +169,7 @@ function openModal() {
     form["name"].setAttribute("onkeyup", "matchesByName(this.value)");
     pMatches.innerText = "";
     form.reset();
+    form["id"].value = "";
     form["power"].value = 0;
     modal.style.display = "block";
 
@@ -222,7 +234,7 @@ function matchesByName(value) {
 }
 
 function validationSaveForm() {
-    var form, id, name, universe, power, description, alive, logo;
+    var form, id, name, universe, power, description, alive, phone, logo;
     form = document.forms["saveForm"];
     id = form["id"].value;
     name = form["name"].value;
@@ -230,10 +242,17 @@ function validationSaveForm() {
     power = form["power"].value;
     description = form["description"].value;
     alive = form["alive"].value;
+    phone = form["phone"].value;
     logo = form["logo"].files[0];
-    if (document.getElementById("matches").innerText.indexOf(name) !== -1) {
+    if (document.getElementById("matches").innerText.length != 0) {
         errorPrint("Hero with the same name already exists");
         return;
+    }
+    if (phone.length != 0) {
+        if (!/[+]7-\d{3}-\d{3}-\d{2}-\d{2}/.test(phone)) {
+            errorPrint("The number phone no correct");
+            return;
+        }
     }
     if (name.length > 30) {
         errorPrint("The name should not be more than 30 characters");
@@ -243,7 +262,7 @@ function validationSaveForm() {
         errorPrint("The power should not be less than 0 and greater than 100");
         return;
     }
-    save(id, name, universe, power, description, alive, logo);
+    save(id, name, universe, power, description, alive, phone, logo);
 }
 
 function errorPrint(errorText) {

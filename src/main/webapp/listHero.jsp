@@ -37,6 +37,7 @@
     <th>Power</th>
     <th>Description</th>
     <th>Alive</th>
+    <th>Phone</th>
     <th>Logo</th>
     <th>Delete</th>
     <th>Update</th>
@@ -55,14 +56,15 @@
     <div class="modal-content">
         <div class="form-style-2">
             <form name="saveForm">
-                <input type="hidden" name="id" value="${hero.id}">
-                <label for="name"><span>Name <span class="required">*</span></span><input type="text" class="input-field" name="name" value="${hero.name}"></label>
+                <input type="hidden" name="id">
+                <label for="name"><span>Name </span><input type="text" class="input-field" name="name"></label>
                 <label><p id="matches"></p></label>
-                <label for="universe"><span>Universe <span class="required">*</span></span><input type="text" class="input-field" name="universe" value="${hero.universe}"></label>
-                <label for="power"><span>Power <span class="required">*</span></span><input type="number" class="input-field" name="power" value="${hero.power}" min="0" max="100"></label>
-                <label for="description"><span>Description <span class="required">*</span></span><textarea name="description" class="textarea-field"></textarea></label>
+                <label for="universe"><span>Universe </span><input type="text" class="input-field" name="universe"></label>
+                <label for="power"><span>Power </span><input type="number" class="input-field" name="power" min="0" max="100"></label>
+                <label for="description"><span>Description </span><textarea name="description" class="textarea-field"></textarea></label>
                 <label for="alive"><span>Alive </span><input type="radio" class="input-field" name="alive" value="true" checked></label>
                 <label for="alive"><span>Dead </span><input type="radio" class="input-field" name="alive" value="false"></label>
+                <label><span>Telephone </span><input type="text" class="input-field" name="phone" value="" maxlength="16" title="Enter phone in the format +7-xxx-xxx-xx-xx" placeholder="Enter phone in the format +7-xxx-xxx-xx-xx"/></label>
                 <label for="logo"><span>Logo </span><input type="file" class="input-field" name="logo"></label>
             </form>
             <label><span> </span>

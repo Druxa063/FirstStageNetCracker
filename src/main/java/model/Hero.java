@@ -8,22 +8,24 @@ public class Hero {
     private int power;
     private String description;
     private boolean alive;
+    private String phone;
     private String logo;
 
     public Hero() {
     }
 
-    public Hero(String name, String universe, int power, String description, boolean alive, String logo) {
-        this(null, name, universe, power, description, alive, logo);
+    public Hero(String name, String universe, int power, String description, boolean alive, String phone, String logo) {
+        this(null, name, universe, power, description, alive, phone, logo);
     }
 
-    public Hero(Integer id, String name, String universe, int power, String description, boolean alive, String logo) {
+    public Hero(Integer id, String name, String universe, int power, String description, boolean alive, String phone, String logo) {
         this.id = id;
         this.name = name;
         this.universe = universe;
         this.power = power;
         this.description = description;
         this.alive = alive;
+        this.phone = phone;
         this.logo = logo;
     }
 
@@ -75,8 +77,12 @@ public class Hero {
         this.alive = alive;
     }
 
-    public boolean isNew() {
-        return id == null;
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getLogo() {
@@ -87,9 +93,14 @@ public class Hero {
         this.logo = logo;
     }
 
+    public boolean isNew() {
+        return id == null;
+    }
+
     @Override
     public String toString() {
         String logo = this.logo == null ? "" : this.logo;
+        String phone = this.phone == null ? "" : this.phone;
         return "{" +
                 "\"id\":\"" +id + "\", " +
                 "\"name\":\""  + name + "\", " +
@@ -97,6 +108,7 @@ public class Hero {
                 "\"power\":" + power + ", "+
                 "\"description\":\"" + description + "\", " +
                 "\"alive\":" + alive + ", " +
+                "\"phone\":\"" + phone + "\", " +
                 "\"logo\":\"" + logo + "\"" +
                 "}";
     }
