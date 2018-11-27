@@ -18,9 +18,16 @@ public class HeroRepositoryImpl implements HeroRepository {
         if (hero.isNew()) {
             statement = connection.prepareStatement("INSERT INTO hero (name, universe, power, description, alive, phone, logo) VALUES (?, ?, ?, ?, ?, ?, ?)");
         } else {
-            statement = connection.prepareStatement("UPDATE hero SET " +
-                    "name=?, universe=?, power=?, description=?, alive=?, phone=?, logo=? WHERE id=?");
-            statement.setInt(8, hero.getId());
+            if (hero.getLogo() == null) {
+                statement = connection.prepareStatement("UPDATE hero SET " +
+                        "name=?, universe=?, power=?, description=?, alive=?, phone=? WHERE id=?");
+                statement.setInt(7, hero.getId());
+            } else {
+                statement = connection.prepareStatement("UPDATE hero SET " +
+                        "name=?, universe=?, power=?, description=?, alive=?, phone=?, logo=? WHERE id=?");
+                statement.setString(7, hero.getLogo());
+                statement.setInt(8, hero.getId());
+            }
         }
         statement.setString(1, hero.getName());
         statement.setString(2, hero.getUniverse());
@@ -28,7 +35,6 @@ public class HeroRepositoryImpl implements HeroRepository {
         statement.setString(4, hero.getDescription());
         statement.setBoolean(5, hero.isAlive());
         statement.setString(6, hero.getPhone());
-        statement.setString(7, hero.getLogo());
         boolean execute = statement.execute();
         statement.close();
         connection.close();

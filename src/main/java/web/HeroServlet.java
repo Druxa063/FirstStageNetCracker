@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -40,24 +41,27 @@ public class HeroServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         try {
             switch (action == null ? "all" : action) {
                 case "find" :
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
                     StringBuilder like = new StringBuilder(request.getParameter("nameHero"));
                     boolean matches = Boolean.parseBoolean(request.getParameter("matches"));
                     if (!matches) {
                         like.insert(0, "%");
                         like.append("%");
                     }
-                    String json = repository.getByName(like.toString()).toString();
+                    List<Hero> listName = repository.getByName(like.toString());
+                    String json = listName.toString();
                     response.getWriter().write(json);
-                    log.info("Hero successfully found");
+                    if (listName.size() > 0) {
+                        log.info("Hero successfully found");
+                    } else {
+                        log.info("Hero not found");
+                    }
                     break;
                 case "sort" :
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
                     String sortParam = request.getParameter("sortParam");
                     StringBuilder nameHero = new StringBuilder(request.getParameter("nameHero"));
                     nameHero.insert(0, "%");
@@ -73,14 +77,10 @@ public class HeroServlet extends HttpServlet {
                     break;
                 case "update":
                     Hero hero = repository.get(getId(request));
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
                     response.getWriter().write(hero.toString());
                     log.info("forward to saveForm");
                     break;
                 case "ajax" :
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
                     String allJSON = repository.getAll().toString();
                     response.getWriter().write(allJSON);
                     log.info("getAll through ajax");
@@ -111,11 +111,11 @@ public class HeroServlet extends HttpServlet {
             boolean alive = Boolean.parseBoolean(request.getParameter("alive"));
             String phone = request.getParameter("phone");
             String logo = request.getParameter("logo");
-            if (!phone.matches("[+]7-\\d{3}-\\d{3}-\\d{2}-\\d{2}")) {
-                throw new ValidationException("The number phone no correct");
+            if (name.isEmpty()) {
+                throw new ValidationException("The name must not be empty");
             }
             if (name.length() > 30) {
-                throw new ValidationException("The name should not be more than 30 characters");
+                throw new ValidationException("The name must not be more than 30 characters");
             }
             if (id.isEmpty() & !repository.getByName(name).isEmpty()) { //проверка при создании героя на дубликат
                 throw new ValidationException("Hero with the same name already exists");
@@ -124,7 +124,12 @@ public class HeroServlet extends HttpServlet {
                 throw new ValidationException("Hero with the same name already exists");
             }
             if (power < 0 || power > 100) {
-                throw new ValidationException("The power should not be less than 0 and greater than 100");
+                throw new ValidationException("The power must not be less than 0 and greater than 100");
+            }
+            if (!phone.isEmpty()) {
+                if (!phone.matches("[+]7-\\d{3}-\\d{3}-\\d{2}-\\d{2}")) {
+                    throw new ValidationException("The number phone no correct");
+                }
             }
             Hero hero = new Hero(
                     id.isEmpty() ? null : getId(request),

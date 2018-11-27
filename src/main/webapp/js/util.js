@@ -244,8 +244,20 @@ function validationSaveForm() {
     alive = form["alive"].value;
     phone = form["phone"].value;
     logo = form["logo"].files[0];
+    if (name.length == 0) {
+        errorPrint("The name must not be empty");
+        return;
+    }
     if (document.getElementById("matches").innerText.length != 0) {
         errorPrint("Hero with the same name already exists");
+        return;
+    }
+    if (name.length > 30) {
+        errorPrint("The name must not be more than 30 characters");
+        return;
+    }
+    if (power < 0 || power > 100 || power == "") {
+        errorPrint("The power must not be less than 0 and greater than 100");
         return;
     }
     if (phone.length != 0) {
@@ -253,14 +265,6 @@ function validationSaveForm() {
             errorPrint("The number phone no correct");
             return;
         }
-    }
-    if (name.length > 30) {
-        errorPrint("The name should not be more than 30 characters");
-        return;
-    }
-    if (power < 0 || power > 100 || power == "") {
-        errorPrint("The power should not be less than 0 and greater than 100");
-        return;
     }
     save(id, name, universe, power, description, alive, phone, logo);
 }
