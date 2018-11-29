@@ -117,7 +117,7 @@ public class HeroServlet extends HttpServlet {
             if (name.length() > 30) {
                 throw new ValidationException("The name must not be more than 30 characters");
             }
-            if (id.isEmpty() & !repository.getByName(name).isEmpty()) { //проверка при создании героя на дубликат
+            if (id.isEmpty() && !repository.getByName(name).isEmpty()) { //проверка при создании героя на дубликат
                 throw new ValidationException("Hero with the same name already exists");
             }
             if(!id.isEmpty() && !name.equalsIgnoreCase(repository.get(getId(request)).getName())) { //проверка при изменении имени на другое
