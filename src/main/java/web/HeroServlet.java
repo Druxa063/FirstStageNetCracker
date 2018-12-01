@@ -2,35 +2,30 @@ package web;
 
 import model.Hero;
 import org.apache.log4j.Logger;
-import repository.HeroRepository;
 import repository.HeroRepositoryImpl;
+import service.HeroService;
+import service.HeroServiceImpl;
 import util.ValidationException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 
 public class HeroServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(HeroServlet.class);
 
-    private HeroRepository repository;
+    private HeroService service;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        repository = new HeroRepositoryImpl();
+        service = new HeroServiceImpl(new HeroRepositoryImpl());
     }
 
     @Override
@@ -52,7 +47,7 @@ public class HeroServlet extends HttpServlet {
                         like.insert(0, "%");
                         like.append("%");
                     }
-                    List<Hero> listName = repository.getByName(like.toString());
+                    List<Hero> listName = service.getByName(like.toString());
                     String json = listName.toString();
                     response.getWriter().write(json);
                     if (listName.size() > 0) {
@@ -66,22 +61,22 @@ public class HeroServlet extends HttpServlet {
                     StringBuilder nameHero = new StringBuilder(request.getParameter("nameHero"));
                     nameHero.insert(0, "%");
                     nameHero.append("%");
-                    String sortJson = repository.getByNameSortNameOrPower(nameHero.toString(), sortParam).toString();
+                    String sortJson = service.getByNameSortNameOrPower(nameHero.toString(), sortParam).toString();
                     response.getWriter().write(sortJson);
                     log.info("Hero successfully sorted by " + sortParam);
                     break;
                 case "delete":
                     int id = getId(request);
-                    repository.delete(id);
+                    service.delete(id);
                     log.info("Hero successfully deleted");
                     break;
                 case "update":
-                    Hero hero = repository.get(getId(request));
+                    Hero hero = service.get(getId(request));
                     response.getWriter().write(hero.toString());
                     log.info("forward to saveForm");
                     break;
                 case "ajax" :
-                    String allJSON = repository.getAll().toString();
+                    String allJSON = service.getAll().toString();
                     response.getWriter().write(allJSON);
                     log.info("getAll through ajax");
                     break;
@@ -111,26 +106,6 @@ public class HeroServlet extends HttpServlet {
             boolean alive = Boolean.parseBoolean(request.getParameter("alive"));
             String phone = request.getParameter("phone");
             String logo = request.getParameter("logo");
-            if (name.isEmpty()) {
-                throw new ValidationException("The name must not be empty");
-            }
-            if (name.length() > 30) {
-                throw new ValidationException("The name must not be more than 30 characters");
-            }
-            if (id.isEmpty() && !repository.getByName(name).isEmpty()) { //проверка при создании героя на дубликат
-                throw new ValidationException("Hero with the same name already exists");
-            }
-            if(!id.isEmpty() && !name.equalsIgnoreCase(repository.get(getId(request)).getName())) { //проверка при изменении имени на другое
-                throw new ValidationException("Hero with the same name already exists");
-            }
-            if (power < 0 || power > 100) {
-                throw new ValidationException("The power must not be less than 0 and greater than 100");
-            }
-            if (!phone.isEmpty()) {
-                if (!phone.matches("[+]7-\\d{3}-\\d{3}-\\d{2}-\\d{2}")) {
-                    throw new ValidationException("The number phone no correct");
-                }
-            }
             Hero hero = new Hero(
                     id.isEmpty() ? null : getId(request),
                     name,
@@ -141,7 +116,8 @@ public class HeroServlet extends HttpServlet {
                     phone,
                     logo
             );
-            repository.save(hero);
+            service.validation(hero);
+            service.save(hero);
             log.info("Hero successfully create/update");
         } catch (ValidationException e) {
             response.setCharacterEncoding("UTF-8");
