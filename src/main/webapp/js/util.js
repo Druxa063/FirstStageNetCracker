@@ -7,7 +7,7 @@ function loadTable() {
             paint(json);
         }
     };
-    xmlhttp.open("GET", "heroes?action=ajax", true);
+    xmlhttp.open("GET", "heroes?action=all", true);
     xmlhttp.send();
 }
 

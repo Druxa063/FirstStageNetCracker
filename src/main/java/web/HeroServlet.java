@@ -75,15 +75,11 @@ public class HeroServlet extends HttpServlet {
                     response.getWriter().write(hero.toString());
                     log.info("forward to saveForm");
                     break;
-                case "ajax" :
-                    String allJSON = service.getAll().toString();
-                    response.getWriter().write(allJSON);
-                    log.info("getAll through ajax");
-                    break;
                 case "all":
                 default:
                     log.info("forward to heroes");
-                    request.getRequestDispatcher("/listHero.jsp").forward(request, response);
+                    String allJSON = service.getAll().toString();
+                    response.getWriter().write(allJSON);
                     break;
             }
         } catch (SQLException e) {

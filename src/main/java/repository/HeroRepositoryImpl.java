@@ -17,6 +17,7 @@ public class HeroRepositoryImpl implements HeroRepository {
         PreparedStatement statement = null;
         if (hero.isNew()) {
             statement = connection.prepareStatement("INSERT INTO hero (name, universe, power, description, alive, phone, logo) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            statement.setString(7, hero.getLogo());
         } else {
             if (hero.getLogo() == null) {
                 statement = connection.prepareStatement("UPDATE hero SET " +
